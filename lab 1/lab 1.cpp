@@ -27,6 +27,7 @@ int main()
 
             if (in.is_open()) {
                 in >> shift; 
+                shift = shift % 27;
                 getline(in, code);
                 getline(in, code);
             }
@@ -72,7 +73,9 @@ int main()
             ifstream in(path + "\\input.txt");
 
             if (in.is_open()) {
-                in >> k; getline(in,code);
+                in >> k;
+                k = k % 17;
+                getline(in,code);
 
                 for (int i = 0; i < k; i++) {
                     getline(in, line);
