@@ -2,134 +2,81 @@
 #include <list>
 #include <fstream>
 #include <string>
-
+#include <algorithm>
 using namespace std;
 
-bool IsSimple(int a);
-
-int main()
-{
-    int choice;
-
-    cout << "Coder(1) or decoder(2)?\n";
-    cin >> choice;
-
-    switch (choice) {
-
-    case 1: {
-        string path;
-        string code;
-        string strSimple;
-        string strNotSimple;
-        int shift = 0;
-
-        cout << "Enter the path: ";
-        cin >> path;
-        ifstream in(path + "\\input_cod.txt");
-
-        if (in.is_open()) {
-            in >> shift;
-            getline(in, code);
-            getline(in, code);
-        }
-
-        in.close();
-
-        for (int i = 0; i < shift; i++) {
-            strSimple = "";
-            strNotSimple = "";
-
-            for (int i1 = 1; i1 <= code.length(); i1++) {
-                if (IsSimple(i1))
-                    strSimple.push_back(code[i1 - 1]);
-                else
-                    strNotSimple.push_back(code[i1 - 1]);
-            }
-
-            code = strSimple + strNotSimple;
-        }
-
-        ofstream out(path + "\\output_cod.txt");
-        out << code;
-        out.close();
-    }
-
-    case 2: {
-        string path;
-        string code;
-        string strSimple = "";
-        string strNotSimple = "";
-        int shift = 0;
-        int quantitySimple = 0;
-        int strLength;
-        int iS, iNS;
-
-        cout << "Enter the path: ";
-        cin >> path;
-        ifstream in(path + "\\input.txt");
-
-        if (in.is_open()) {
-            in >> shift;
-            getline(in, code);
-            getline(in, code);
-        }
-
-        in.close();
-        strLength = code.length();
-
-        for (int i = 1; i <= code.length(); i++)
-            if (IsSimple(i))
-                quantitySimple++;
-
-        for (int ish = 0; ish < shift; ish++) {
-
-            strSimple = "";
-            strNotSimple = "";
-
-            for (int i = 0; i < quantitySimple; i++)
-                strSimple.push_back(code[i]);
-
-            for (int i = quantitySimple; i < code.length(); i++)
-                strNotSimple.push_back(code[i]);
-
-            iS = 0;
-            iNS = 0;
-            code = "";
-
-            for (int i1 = 1; i1 <= strLength; i1++) {
-                if (IsSimple(i1)) { 
-                    code.push_back(strSimple[iS]);
-                    iS++;
-                } else {
-                    code.push_back(strNotSimple[iNS]);
-                    iNS++;
-                }
-            }
-        }
-
-        ofstream out(path + "\\output.txt");
-        out << code;
-        out.close();
-        break;
-    }
-
-    default:
-        break;
-    }
+void swap(int* a, int i, int j) {
+    int s = a[i];
+    a[i] = a[j];
+    a[j] = s;
 }
 
-bool IsSimple(int a) {
-    int k = 1;
+bool NextSet(int* a, int n) {
+    int j = n - 2;
+    while (j != -1 && a[j] >= a[j + 1]) j--;
+    if (j == -1)
+        return false; // больше перестановок нет
+    int k = n - 1;
+    while (a[j] >= a[k]) k--;
+    swap(a, j, k);
+    int l = j + 1, r = n - 1; // сортируем оставшуюся часть последовательности
+    while (l < r)
+        swap(a, l++, r--);
+    return true;
+}
 
-    if (a == 1)
-        return false;
+bool ifTrue(int* a, int n) {
+    int x, lastx;
+    int y, lasty;
 
-    for (int i = 1; i <= sqrt(a); i++)
-        if (a % i == 0)
-            k++;
+    for (int i = 0; i < 5; i++)
+        for (int j = 1; j < 5; j++)
+        {
+            lasty = j + 5 * i;
+            y = j + 1 + 5 * i;
+            lastx = i + 5 * (j - 1);
+            x = i + 5 * j;
+            if (a[lastx-1] > a[x-1] || a[lasty-1] > a[y-1])
+                return false;
+        }
 
-    if (k == 2)
-        return true;
-    else
-        return false;
+    return true;
+}
+
+void Print(int* a, int n,string path) {  // вывод перестановки
+    ofstream out(path + "\\output.txt");
+    char ch;
+    for (int i = 0; i < n; i++) {
+        ch = 64 + a[i];
+        out << ch << " ";
+    }
+    cout << endl;
+    out.close();
+}
+
+int main() {
+    string path;
+    int k, kcheck = 0;
+    int n = 25;
+    int* a = new int[25];
+
+    cout << "Enter the path: ";
+    cin >> path;
+    ifstream in(path + "\\input.txt");
+    in >> k;
+    in.close();
+
+    for (int i = 0; i < 25; i++)
+        a[i] = i + 1;
+
+    while (NextSet(a, n))
+        if (ifTrue(a, n)) {
+            kcheck++;
+            if (k == kcheck) {
+                Print(a, n, path);
+                break;
+            }
+        }
+
+    return 0;
 }
