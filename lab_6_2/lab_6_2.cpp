@@ -1,4 +1,4 @@
-﻿#include <iostream>   
+﻿#include <fstream>   
 #include <vector>  
 #include <set> 
 #include <string>
@@ -18,15 +18,19 @@ bool next_comb(std::vector<int>& LO, int n, int m);
 
 int main()
 {
-	setlocale(LC_ALL, "RUS");
+	ofstream fout;
+	fout.open("output.txt");
+
+	ifstream fin;
+	fin.open("input.txt");
+
 	int n, m;
-	cout << "Введите число субъектов" << endl;
-	cin >> n;
-	cout << "Введите число объектов" << endl;
-	cin >> m;
-	cout << "Введите 0 для ручного ввода" << endl;
+	fin >> n;
+	fin >> m;
 	int inp = 0;
-	cin >> inp;
+	fin >> inp;
+
+	fin.close();
 
 	///матрица A[1:n; 1:m] прав доступа субъектов s1, s2, …, sn к объектам o1, o2, … , om
 	vector <vector<char>> A(n, vector<char>(m));
@@ -40,18 +44,18 @@ int main()
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
 			if (inp == 0)
-				cin >> A[i][j];
+				fin >> A[i][j];
 			else
 				A[i][j] = getRandomRule();
 		}
 	}
 
-	cout << "\nВывод матрицы A" << endl;
+	fout << "\nВывод матрицы A" << endl;
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
-			cout << A[i][j] << ' ';
+			fout << A[i][j] << ' ';
 		}
-		cout << endl;
+		fout << endl;
 	}
 
 
@@ -70,12 +74,12 @@ int main()
 				}
 			}
 			if (all_ok) {
-				cout << "LS: ";
+				fout << "LS: ";
 				for (int i = 0; i < n; i++)
-					cout << LS[i] << ' ';
-				cout << endl << "LO: ";
+					fout << LS[i] << ' ';
+				fout << endl << "LO: ";
 				for (int i = 0; i < m; i++)
-					cout << LO[i] << ' ';
+					fout << LO[i] << ' ';
 				return 0;
 			}
 
@@ -88,7 +92,9 @@ int main()
 		if (true != next_comb(LS, n, m))
 			return 0;
 	}
-	cout << "\n-(\n";
+	fout << "\n-(\n";
+
+	fout.close();
 }
 
 bool next_comb(std::vector<int>& LO, int n, int m)

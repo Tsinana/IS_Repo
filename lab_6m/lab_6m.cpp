@@ -1,4 +1,5 @@
 ﻿#include <iostream>   
+#include <fstream> 
 #include <vector>  
 #include <string>
 
@@ -15,15 +16,18 @@ char getRandomRule()
 
 int main()
 {
+	ofstream fout;
+	fout.open("output.txt");
+
+	ifstream fin;
+	fin.open("input.txt");
+
 	setlocale(LC_ALL, "RUS");
 	int n, m;
-	cout << "Введите число субъектов" << endl;
-	cin >> n;
-	cout << "Введите число объектов" << endl;
-	cin >> m;
-	cout << "Введите 0 для ручного ввода" << endl;
+	fin >> n;
+	fin >> m;
 	int inp = 0;
-	cin >> inp;
+	fin >> inp;
 
 	///матрица A[1:n; 1:m] прав доступа субъектов s1, s2, …, sn к объектам o1, o2, … , om
 	vector <vector<char>> A(n, vector<char>(m));
@@ -38,39 +42,39 @@ int main()
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
 			if (inp == 0)
-				cin >> A[i][j];
+				fin >> A[i][j];
 			else
 				A[i][j] = getRandomRule();
 		}
 	}
-
-	cout << "\nВывод матрицы A" << endl;
+	fin.close();
+	fout << "\nВывод матрицы A" << endl;
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
-			cout << A[i][j] << ' ';
+			fout << A[i][j] << ' ';
 		}
-		cout << endl;
+		fout << endl;
 	}
 
-	cout << "\nLS" << endl;
+	fout << "\nLS" << endl;
 	for (int i = 0; i < n; i++) {
 		if (inp == 0)
-			cin >> LS[i];
+			fin >> LS[i];
 		else
 			LS[i] = rand() % 3 + 1;
-		cout << LS[i] << " ";
+		fout << LS[i] << " ";
 	}
-	cout << endl;
+	fout << endl;
 
-	cout << "\nLO" << endl;
+	fout << "\nLO" << endl;
 	for (int i = 0; i < m; i++) {
 		if (inp == 0)
-			cin >> LO[i];
+			fin >> LO[i];
 		else
 			LO[i] = rand() % 3 + 1;
-		cout << LO[i] << " ";
+		fout << LO[i] << " ";
 	}
-	cout << endl;
+	fout << endl;
 
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
@@ -81,9 +85,10 @@ int main()
 		}
 	}
 
-	cout << "\nКритерию безопасности Белла - Лападулы";
+	fout << "\nКритерию безопасности Белла - Лападулы";
 	if (isSecretNornal)
-		cout << " есть" << endl;
+		fout << " есть" << endl;
 	else
-		cout << " нет" << endl;
+		fout << " нет" << endl;
+	fout.close();
 }
