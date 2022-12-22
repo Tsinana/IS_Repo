@@ -1,0 +1,8 @@
+2 3
+cer = 'r+' image_0 image_0
+cer = 'w+' image_0 image_0
+cer = 'r+' image_1 image_0
+cer = 'r+' image_1 image_1
+cer = 'r+' image_1 image_2
+cer = 'r+' image_0 image_1
+cer = 'x+' image_0 image_2
